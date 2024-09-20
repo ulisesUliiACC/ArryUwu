@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -8,20 +9,46 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterScreen> {
+class _RegisterPageState extends State<RegisterScreen>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
-  bool _obscurePassword = true; // Variable to control password visibility
-  bool _showRegistrationForm = false;
+  bool _obscurePassword = true;
+
+  late AnimationController _lottieController; // Controlador para la animación
+  bool _canAnimate = false; // Controla si la animación puede avanzar
+
+  @override
+  void initState() {
+    super.initState();
+    _lottieController = AnimationController(vsync: this);
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _nameController.dispose();
+    _lottieController.dispose(); // Libera el controlador de la animación
     super.dispose();
+  }
+
+  // Función para actualizar el progreso de la animación
+  void _updateAnimationState() {
+    setState(() {
+      // Checa si todos los campos están llenos
+      if (_nameController.text.isNotEmpty &&
+          _emailController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty) {
+        _canAnimate = true;
+        _lottieController.forward(); // Avanza la animación
+      } else {
+        _canAnimate = false;
+        _lottieController.reset(); // Reinicia la animación si no está completa
+      }
+    });
   }
 
   @override
@@ -38,15 +65,28 @@ class _RegisterPageState extends State<RegisterScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const SizedBox(
+                SizedBox(
                   height: 150,
                   width: 150,
-                  child: Placeholder(),
+                  child: Lottie.asset(
+                    'assets/lottie/heart.json', // Asegúrate de tener el archivo correcto
+                    controller: _lottieController,
+                    repeat:
+                        !_canAnimate, // Repite el latido si no puede avanzar
+                    onLoaded: (composition) {
+                      _lottieController
+                        ..duration = composition.duration
+                        ..repeat(); // Repite el latido por defecto
+                    },
+                  ),
                 ),
                 const SizedBox(height: 20),
-                // Name input field
+
+                // Campo de nombre
                 TextFormField(
                   controller: _nameController,
+                  onChanged: (value) =>
+                      _updateAnimationState(), // Actualiza el estado de la animación
                   decoration: const InputDecoration(
                     labelText: 'Nombre de Usuario',
                     prefixIcon: Icon(FontAwesomeIcons.user),
@@ -88,9 +128,11 @@ class _RegisterPageState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Email input field
+                // Campo de correo electrónico
                 TextFormField(
                   controller: _emailController,
+                  onChanged: (value) =>
+                      _updateAnimationState(), // Actualiza el estado de la animación
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(FontAwesomeIcons.envelope),
@@ -127,7 +169,6 @@ class _RegisterPageState extends State<RegisterScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, ingrese un correo electrónico';
                     }
-                    // RegExp para validar correo electrónico
                     final emailRegex = RegExp(
                         r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
                     if (!emailRegex.hasMatch(value)) {
@@ -138,10 +179,12 @@ class _RegisterPageState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Password input field
+                // Campo de contraseña
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
+                  onChanged: (value) =>
+                      _updateAnimationState(), // Actualiza el estado de la animación
                   decoration: InputDecoration(
                     labelText: 'Contraseña',
                     prefixIcon: const Icon(FontAwesomeIcons.key),
@@ -155,28 +198,28 @@ class _RegisterPageState extends State<RegisterScreen> {
                         });
                       },
                     ),
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       borderSide: BorderSide(
                         width: 1,
                         color: Color(0xFF837E93),
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       borderSide: BorderSide(
                         width: 1,
                         color: Color(0xFF9F7BFF),
                       ),
                     ),
-                    errorBorder: OutlineInputBorder(
+                    errorBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       borderSide: BorderSide(
                         width: 1,
                         color: Colors.red,
                       ),
                     ),
-                    focusedErrorBorder: OutlineInputBorder(
+                    focusedErrorBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       borderSide: BorderSide(
                         width: 1,
@@ -193,11 +236,11 @@ class _RegisterPageState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Register button
+                // Botón de registro
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Perform registration action
+                      // Lógica para completar el registro
                     }
                   },
                   style: ElevatedButton.styleFrom(

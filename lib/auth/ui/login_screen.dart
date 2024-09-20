@@ -42,10 +42,10 @@ class _LoginPageState extends State<LoginScreen> {
               children: <Widget>[
                 // Image placeholder (replace with your actual image widget)
                 //aquiva el archivo  lottie
-                const SizedBox(
+                SizedBox(
                   height: 150,
                   width: 150,
-                  child: Placeholder(),
+                  child: Lottie.asset('assets/lottie/AnimacionPantalla.json'),
                 ),
                 const SizedBox(height: 20),
 
@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginScreen> {
                         color: Colors.red,
                       ),
                     ),
-                    focusedErrorBorder:const  OutlineInputBorder(
+                    focusedErrorBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       borderSide: BorderSide(
                         width: 1,
@@ -183,8 +183,8 @@ class _LoginPageState extends State<LoginScreen> {
                     minimumSize: const Size(150, 50),
                     padding: const EdgeInsets.all(20),
                   ),
-                  child:
-                  Text(_showRegistrationForm ? 'Registrarse' : 'Iniciar sesión'),
+                  child: Text(
+                      _showRegistrationForm ? 'Registrarse' : 'Iniciar sesión'),
                 ),
                 const SizedBox(height: 20),
 
@@ -194,11 +194,12 @@ class _LoginPageState extends State<LoginScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const RegisterScreen()), // Navigate to RegisterScreen
+                          builder: (context) =>
+                              const RegisterScreen()), // Navigate to RegisterScreen
                     );
                   },
-                  child:
-                  Text(_showRegistrationForm ? 'Iniciar sesión' : 'Registrarse'),
+                  child: Text(
+                      _showRegistrationForm ? 'Iniciar sesión' : 'Registrarse'),
                 ),
               ],
             ),
