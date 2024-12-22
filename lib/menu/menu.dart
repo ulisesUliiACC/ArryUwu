@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class MenuScreen extends StatelessWidget {
   final int currentIndex;
@@ -15,31 +15,27 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Menu')),
-      body: const Center(child: Text('Pantalla de menú XD')),
-      bottomNavigationBar: FancyBottomNavigation(
-        initialSelection: currentIndex,
-        activeIconColor: Colors.deepPurple,
-        circleColor: Colors.deepPurpleAccent,
-        inactiveIconColor: Colors.grey,
-        textColor: Colors.deepPurple,
-        barBackgroundColor: Colors.white,
-        tabs: [
-          TabData(
-            iconData: Icons.home,
-            title: 'Inicio',
+      body: const Center(child: Text('Pantalla de menú ')),
+      bottomNavigationBar: SalomonBottomBar(
+        currentIndex: currentIndex,
+        onTap: onTabChanged,
+        items: [
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.home),
+            title: const Text('Inicio'),
+            selectedColor: Colors.deepPurple,
           ),
-          TabData(
-            iconData: Icons.search,
-            title: 'Buscar',
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.search),
+            title: const Text('Buscar uwu'),
+            selectedColor: Colors.deepPurpleAccent,
           ),
-          TabData(
-            iconData: Icons.account_circle,
-            title: 'Perfil uwu',
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.account_circle),
+            title: const Text('Perfil uwu'),
+            selectedColor: Colors.purple,
           ),
         ],
-        onTabChangedListener: (int position) {
-          onTabChanged(position);
-        },
       ),
     );
   }

@@ -177,13 +177,18 @@ class _LoginPageState extends State<LoginScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Perform login or registration action based on _showRegistrationForm
-                      // ...
+                      // Realizar acción de inicio de sesión o registro según _showRegistrationForm
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MenuScreen(
-                                currentIndex: 0, onItemSelected: (index) {})),
+                          builder: (context) => MenuScreen(
+                            currentIndex: 0,
+                            onTabChanged: (index) {
+                              // Manejo de selección de pestaña
+                              print("Pestaña seleccionada: $index");
+                            },
+                          ),
+                        ),
                       );
                     }
                   },
