@@ -1,3 +1,4 @@
+import 'package:arryuwu/menu/menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';
 
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:arryuwu/auth/ui/RegisterScreen.dart'; // Import RegisterScreen
 
+// ...'
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -17,7 +19,7 @@ class _LoginPageState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true; // Variable to control password visibility
-  bool _showRegistrationForm = false; // Variable to control form type
+  final bool _showRegistrationForm = false; // Variable to control form type
 
   @override
   void dispose() {
@@ -30,7 +32,7 @@ class _LoginPageState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_showRegistrationForm ? 'Registro' : 'Login'),
+        title: Text(_showRegistrationForm ? 'Registro' : ''),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -177,6 +179,12 @@ class _LoginPageState extends State<LoginScreen> {
                     if (_formKey.currentState!.validate()) {
                       // Perform login or registration action based on _showRegistrationForm
                       // ...
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MenuScreen(
+                                currentIndex: 0, onItemSelected: (index) {})),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(

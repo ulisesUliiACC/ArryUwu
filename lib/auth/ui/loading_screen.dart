@@ -5,6 +5,8 @@ import 'package:lottie/lottie.dart';
 
 
 class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
+
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }

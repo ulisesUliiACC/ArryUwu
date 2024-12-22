@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:arryuwu/auth/ui/login_screen.dart'; // Import LoginPage
 import 'package:arryuwu/auth/ui/loading_screen.dart';
-
+import 'package:arryuwu/Home/HomeScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,12 +21,11 @@ class MyApp extends StatelessWidget {
       // Set initial route to '/login' to show LoginPage first
       initialRoute: '/',
       routes: {
-        '/': (context) => LoadingScreen(),
+        '/': (context) => const LoadingScreen(),
         '/login': (context) => const LoginScreen(),
-        // Add other routes for different screens here (optional)
+        '/home': (context) => const HomeScreen(),
+        // // Add other routes for different screens here (optional)
       },
     );
   }
-
-
 }
