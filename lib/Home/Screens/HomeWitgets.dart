@@ -42,14 +42,15 @@ class ActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
 
-  const ActionButton({Key? key, required this.label, required this.onPressed}) : super(key: key);
+  const ActionButton({Key? key, required this.label, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.deepPurple,  // Color de fondo
+        backgroundColor: Colors.deepPurple, // Color de fondo
         minimumSize: const Size(200, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -58,6 +59,31 @@ class ActionButton extends StatelessWidget {
       child: Text(
         label,
         style: const TextStyle(color: Colors.white),
+      ),
+    );
+  }
+}
+
+// Widget para un botón de vinculación
+class LinkButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const LinkButton({Key? key, required this.onPressed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.pinkAccent, // Color de fondo para el botón
+        minimumSize: const Size(200, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: const Text(
+        "codigo o Vincular",
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }

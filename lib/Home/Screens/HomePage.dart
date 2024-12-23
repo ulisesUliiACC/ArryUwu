@@ -1,3 +1,4 @@
+import 'package:arryuwu/Home/Screens/CodePage.dart';
 import 'package:arryuwu/Home/Screens/HomeWitgets.dart';
 import 'package:flutter/material.dart'; // Importa los widgets
 
@@ -21,6 +22,15 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 // Acciones al presionar el botón (por ejemplo, navegar a otra pantalla)
                 print('Botón presionado: Ver actividades');
+              },
+            ),
+            const SizedBox(height: 20),
+            LinkButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CodePage()),
+                );
               },
             ),
           ],
