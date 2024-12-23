@@ -1,4 +1,5 @@
-import 'package:arryuwu/menu/menu.dart';
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:3450939145.
+import 'package:arryuwu/Home/HomeScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';
 
@@ -177,17 +178,12 @@ class _LoginPageState extends State<LoginScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Realizar acción de inicio de sesión o registro según _showRegistrationForm
+                      // Redirigir a HomeScreen después de login exitoso
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MenuScreen(
-                            currentIndex: 0,
-                            onTabChanged: (index) {
-                              // Manejo de selección de pestaña
-                              print("Pestaña seleccionada: $index");
-                            },
-                          ),
+                          builder: (context) =>
+                              const HomeScreen(), // Redirige al HomeScreen
                         ),
                       );
                     }

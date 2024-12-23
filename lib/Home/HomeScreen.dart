@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:arryuwu/colors/palette.dart'; // Importa la paleta
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,7 +9,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0; // Índice para la navegación
+  int _currentIndex = 0; // Índice de navegación
   final _pageController = PageController();
 
   // Método para cambiar de página al seleccionar un ítem del menú
@@ -37,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         children: const [
-          Center(child: Text('Página de Inicio')), // Página inicial
-          Center(child: Text('Página de Buscar')), // Otra página
-          Center(child: Text('Página de Perfil')), // Página de perfil
+          Center(child: Text('Página de Inicio')),
+          Center(child: Text('Página de Buscar')),
+          Center(child: Text('Página de Perfil')),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Inicio', // Título del ítem
+            label: 'Inicio',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
@@ -59,6 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Perfil',
           ),
         ],
+        backgroundColor: Palette.accent, // Fondo de la barra inferior
+        selectedItemColor: Palette.white, // Icono seleccionado
+        unselectedItemColor: Palette.secondary, // Icono no seleccionado
       ),
     );
   }
