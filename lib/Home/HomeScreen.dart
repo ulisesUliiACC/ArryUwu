@@ -1,3 +1,4 @@
+import 'package:arryuwu/Home/Screens/NotifyPage.dart';
 import 'package:arryuwu/menu/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:arryuwu/Home/Screens/HomePage.dart'; // Pantalla de inicio
@@ -19,12 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
     HomePage(), // Pantalla de inicio
     Activitypage(), // Pantalla de actividades
     ProfilePage(), // Pantalla de perfil
+    Notifypage(), //pantalla de notificaciones
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex], // Cambia la pantalla según el índice seleccionado
+      body: _screens[
+          _currentIndex], // Cambia la pantalla según el índice seleccionado
       bottomNavigationBar: MenuScreen(
         currentIndex: _currentIndex,
         onTabChanged: (int index) {

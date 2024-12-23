@@ -26,7 +26,13 @@ class MenuScreen extends StatelessWidget {
         ),
         SalomonBottomBarItem(
           icon: const Icon(Icons.search),
-          title: const Text("Buscar"),
+          title: const Text("Actividades"),
+          selectedColor: Palette.pinkAccent,
+          unselectedColor: Palette.secondary,
+        ),
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.notifications),
+          title: const Text("Notificaciones"),
           selectedColor: Palette.primary,
           unselectedColor: Palette.secondary,
         ),
