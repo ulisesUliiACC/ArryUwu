@@ -19,8 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = const [
     HomePage(), // Pantalla de inicio
     Activitypage(), // Pantalla de actividades
-    ProfilePage(), // Pantalla de perfil
     Notifypage(), //pantalla de notificaciones
+    ProfilePage(), // Pantalla de perfil
   ];
 
   @override
