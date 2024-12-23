@@ -1,156 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import '../colors/palette.dart';
+import 'package:arryuwu/colors/palette.dart';
 
 class MenuScreen extends StatefulWidget {
-  final int initialIndex;
-  final Function(int) onTabChanged;
+  final int currentIndex;
+  final ValueChanged<int> onTabChanged;
 
   const MenuScreen({
     Key? key,
-    required this.initialIndex,
-    required this.onTabChanged, required int currentIndex,
+    required this.currentIndex,
+    required this.onTabChanged,
   }) : super(key: key);
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen>
-    with SingleTickerProviderStateMixin {
-  late int _currentIndex;
-  late AnimationController _controller;
+class _MenuScreenState extends State<MenuScreen> {
+  late int _selectedIndex;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-    _controller.forward();
+    _selectedIndex = widget.currentIndex;
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onTabTapped(int index) {
+  void _onItemTapped(int index) {
     setState(() {
-      _currentIndex = index;
+      _selectedIndex = index;
     });
     widget.onTabChanged(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Palette.background,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
-        transitionBuilder: (child, animation) {
-          return ScaleTransition(scale: animation, child: child);
-        },
-        child: Center(
-          key: ValueKey<int>(_currentIndex),
-          child: Text(
-            'Pantalla ${_currentIndex + 1}',
-            style: const TextStyle(
-              fontSize: 24,
-              color: Palette.primary,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Poppins',
-            ),
-          ),
+    return SalomonBottomBar(
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      items: [
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.home),
+          title: const Text("Inicio"),
+          selectedColor: Palette.primary,
+          unselectedColor: Palette.accent,
         ),
-      ),
-      bottomNavigationBar: SalomonBottomBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          _controller.reverse().then((_) {
-            _controller.forward();
-            _onTabTapped(index);
-          });
-        },
-        backgroundColor: Palette.primary,
-        items: [
-          SalomonBottomBarItem(
-            icon: AnimatedScale(
-              scale: _currentIndex == 0 ? 1.2 : 1.0,
-              duration: const Duration(milliseconds: 300),
-              child: const Icon(
-                Icons.home,
-                color: Palette.white,
-              ),
-            ),
-            title: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                'Inicio',
-                key: ValueKey<bool>(_currentIndex == 0),
-                style: TextStyle(
-                  color: Palette.white,
-                  fontWeight:
-                      _currentIndex == 0 ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-            selectedColor: Palette.white,
-            unselectedColor: Palette.white,
-          ),
-          SalomonBottomBarItem(
-            icon: AnimatedScale(
-              scale: _currentIndex == 1 ? 1.2 : 1.0,
-              duration: const Duration(milliseconds: 300),
-              child: const Icon(
-                Icons.search,
-                color: Palette.white,
-              ),
-            ),
-            title: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                'Buscar',
-                key: ValueKey<bool>(_currentIndex == 1),
-                style: TextStyle(
-                  color: Palette.white,
-                  fontWeight:
-                      _currentIndex == 1 ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-            selectedColor: Palette.white,
-            unselectedColor: Palette.white,
-          ),
-          SalomonBottomBarItem(
-            icon: AnimatedScale(
-              scale: _currentIndex == 2 ? 1.2 : 1.0,
-              duration: const Duration(milliseconds: 300),
-              child: const Icon(
-                Icons.person,
-                color: Palette.white,
-              ),
-            ),
-            title: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                'Perfil',
-                key: ValueKey<bool>(_currentIndex == 2),
-                style: TextStyle(
-                  color: Palette.white,
-                  fontWeight:
-                      _currentIndex == 2 ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-            selectedColor: Palette.white,
-            unselectedColor: Palette.white,
-          ),
-        ],
-      ),
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.search),
+          title: const Text("Buscar"),
+          selectedColor: Palette.primary,
+          unselectedColor: Palette.accent,
+        ),
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.favorite),
+          title: const Text("Favoritos"),
+          selectedColor: Palette.primary,
+          unselectedColor: Palette.accent,
+        ),
+        SalomonBottomBarItem(
+          icon: const Icon(Icons.account_circle),
+          title: const Text("Perfil"),
+          selectedColor: Palette.primary,
+          unselectedColor: Palette.accent,
+        ),
+      ],
     );
   }
 }
