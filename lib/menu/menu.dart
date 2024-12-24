@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Importar FontAwesome
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:arryuwu/colors/palette.dart'; // Paleta de colores
@@ -19,25 +20,29 @@ class MenuScreen extends StatelessWidget {
       onTap: onTabChanged, // Acción al cambiar de pestaña
       items: [
         SalomonBottomBarItem(
-          icon: const Icon(Icons.home),
+          icon: const FaIcon(
+              FontAwesomeIcons.house), // Icono de inicio con FontAwesome
           title: const Text("Inicio"),
           selectedColor: Palette.primary,
           unselectedColor: Palette.secondary,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.search),
+          icon: const FaIcon(FontAwesomeIcons
+              .solidCalendar), // Icono de actividades con FontAwesome
           title: const Text("Actividades"),
           selectedColor: Palette.pinkAccent,
           unselectedColor: Palette.secondary,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.notifications),
+          icon: const FaIcon(FontAwesomeIcons
+              .solidBell), // Icono de notificaciones con FontAwesome
           title: const Text("Notificaciones"),
           selectedColor: Palette.primary,
           unselectedColor: Palette.secondary,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.account_circle),
+          icon: const FaIcon(
+              FontAwesomeIcons.userAlt), // Icono de perfil con FontAwesome
           title: const Text("Perfil"),
           selectedColor: Palette.primary,
           unselectedColor: Palette.secondary,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:arryuwu/auth/ui/login_screen.dart';
 import 'package:arryuwu/auth/ui/loading_screen.dart';
 import 'package:arryuwu/Home/HomeScreen.dart';
+import 'package:arryuwu/Home/Screens/Activity/DetailActivityPage.dart'; // Importa las pantallas que necesites
 import 'package:arryuwu/colors/palette.dart'; // Importa la paleta
 
 void main() {
@@ -42,6 +43,16 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoadingScreen(),
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const HomeScreen(),
+      },
+      // Usamos onGenerateRoute para manejar rutas con argumentos o dinámicas
+      onGenerateRoute: (settings) {
+        if (settings.name == '/activityDetail') {
+          final String? title = settings.arguments as String?;
+          return MaterialPageRoute(
+            builder: (context) => DetailActivityPage(title: title ?? 'Actividades'),
+          );
+        }
+        return null; // Si no coincide, devuelve null (puedes agregar más condiciones si es necesario)
       },
     );
   }

@@ -1,9 +1,9 @@
-import 'package:arryuwu/Home/Screens/NotifyPage.dart';
+import 'package:arryuwu/Home/Screens/Notify/NotifyPage.dart';
 import 'package:arryuwu/menu/menu.dart';
 import 'package:flutter/material.dart';
-import 'package:arryuwu/Home/Screens/HomePage.dart'; // Pantalla de inicio
-import 'package:arryuwu/Home/Screens/ActivityPage.dart'; // Pantalla de actividades
-import 'package:arryuwu/Home/Screens/ProfilePage.dart'; // Pantalla de perfil
+import 'package:arryuwu/Home/Screens/Home/HomePage.dart'; // Pantalla de inicio
+import 'package:arryuwu/Home/Screens/Activity/ActivityPage.dart'; // Pantalla de actividades
+import 'package:arryuwu/Home/Screens/Profile/ProfilePage.dart'; // Pantalla de perfil
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Lista de widgets para cada pantalla
   final List<Widget> _screens = const [
     HomePage(), // Pantalla de inicio
-    Activitypage(), // Pantalla de actividades
+    ActivityPage(), // Pantalla de actividades
     Notifypage(), //pantalla de notificaciones
     ProfilePage(), // Pantalla de perfil
   ];

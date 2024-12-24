@@ -1,5 +1,5 @@
-import 'package:arryuwu/Home/Screens/CodePage.dart';
-import 'package:arryuwu/Home/Screens/HomeWitgets.dart';
+import 'package:arryuwu/Home/Screens/Code/CodePage.dart';
+import 'package:arryuwu/Home/Screens/Home/HomeWitgets.dart';
 import 'package:flutter/material.dart'; // Importa los widgets
 
 class HomePage extends StatelessWidget {

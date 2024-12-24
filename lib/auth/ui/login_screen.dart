@@ -1,4 +1,3 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:3450939145.
 import 'package:arryuwu/Home/HomeScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';

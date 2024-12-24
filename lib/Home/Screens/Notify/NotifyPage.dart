@@ -1,4 +1,4 @@
-import 'package:arryuwu/Home/Screens/HomeWitgets.dart';
+import 'package:arryuwu/Home/Screens/Home/HomeWitgets.dart';
 import 'package:flutter/material.dart'; // Importa los widgets
 
 class Notifypage extends StatelessWidget {

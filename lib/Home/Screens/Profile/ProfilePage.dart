@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:arryuwu/Home/Screens/HomeWitgets.dart'; // Asegúrate de que estos widgets existen y son los correctos.
+import 'package:arryuwu/Home/Screens/Home/HomeWitgets.dart'; // Asegúrate de que estos widgets existen y son los correctos.
 import 'package:arryuwu/colors/palette.dart'; // Asegúrate de importar tu paleta
 
 class ProfilePage extends StatelessWidget {
