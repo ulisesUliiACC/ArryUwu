@@ -28,7 +28,7 @@ class ActivityPage extends StatelessWidget {
       {
         "icon": FontAwesomeIcons.heart,
         "color": Colors.redAccent,
-        "title": "Primera cita"
+        "title": "Recuerdos"
       },
       {
         "icon": FontAwesomeIcons.tree,
@@ -38,7 +38,7 @@ class ActivityPage extends StatelessWidget {
       {
         "icon": FontAwesomeIcons.faceSmile,
         "color": Colors.blue,
-        "title": "Día de relax"
+        "title": "mi notas"
       },
     ];
 
@@ -75,11 +75,30 @@ class ActivityPage extends StatelessWidget {
                       children: pageItems.map((activity) {
                         return GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/activityDetail',
-                              arguments: activity["title"],
-                            );
+                            if (activity["title"] == "Preguntas") {
+                              Navigator.pushNamed(
+                                context,
+                                '/questions', // Navega a QuestionsPage
+                              );
+                            } else if (activity["title"] == "Recuerdos") {
+                              // Navegar a la página de recuerdos
+                              Navigator.pushNamed(
+                                context,
+                                '/souvenirs', // Ruta para abrir MyDatesPage
+                              );
+                            } else if (activity["title"] == "mi notas") {
+                              Navigator.pushNamed(
+                                context,
+                                '/notas', // Ruta para abrir DrawingBoard
+                              );
+                            }
+                            else {
+                              Navigator.pushNamed(
+                                context,
+                                '/activityDetail',
+                                arguments: activity["title"],
+                              );
+                            }
                           },
                           child: _achievementCard(
                             icon: activity["icon"] as IconData,

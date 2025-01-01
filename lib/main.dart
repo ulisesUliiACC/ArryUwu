@@ -1,8 +1,11 @@
+import 'package:arryuwu/Home/Screens/Drawer/Drawing.dart';
+import 'package:arryuwu/Home/Screens/Questions/QuestionsPage.dart';
+import 'package:arryuwu/Home/Screens/Souvenirs/MyDatesPage.dart';
 import 'package:flutter/material.dart';
 import 'package:arryuwu/auth/ui/login_screen.dart';
 import 'package:arryuwu/auth/ui/loading_screen.dart';
 import 'package:arryuwu/Home/HomeScreen.dart';
-import 'package:arryuwu/Home/Screens/Activity/DetailActivityPage.dart'; // Importa las pantallas que necesites
+import 'package:arryuwu/Home/Screens/Activity/DetailActivityPage.dart'; // Importa las pantallas
 import 'package:arryuwu/colors/palette.dart'; // Importa la paleta
 
 void main() {
@@ -15,16 +18,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FlyArry Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Palette.primary),
         useMaterial3: true,
         primaryColor: Palette.primary,
-        scaffoldBackgroundColor: Palette.background, // Fondo general más claro
+        scaffoldBackgroundColor: Palette.background,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Palette.secondary, // Barra de navegación en morado claro
+          backgroundColor: Palette.secondary,
           titleTextStyle: TextStyle(
-            color: Colors.black, // Título en negro para buen contraste
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -33,27 +36,57 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Palette.secondary, fontSize: 14),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Palette.accent, // Fondo de la barra inferior
-          selectedItemColor: Palette.primary, // Icono seleccionado
-          unselectedItemColor: Palette.secondary, // Icono no seleccionado
+          backgroundColor: Palette.accent,
+          selectedItemColor: Palette.primary,
+          unselectedItemColor: Palette.secondary,
         ),
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const LoadingScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/home': (context) => const HomeScreen(),
-      },
-      // Usamos onGenerateRoute para manejar rutas con argumentos o dinámicas
-      onGenerateRoute: (settings) {
-        if (settings.name == '/activityDetail') {
-          final String? title = settings.arguments as String?;
-          return MaterialPageRoute(
-            builder: (context) => DetailActivityPage(title: title ?? 'Actividades'),
-          );
-        }
-        return null; // Si no coincide, devuelve null (puedes agregar más condiciones si es necesario)
-      },
+      initialRoute: '/', // Ruta inicial
+      onGenerateRoute: _onGenerateRoute, // Usa onGenerateRoute
     );
+  }
+
+  Route<dynamic>? _onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(
+          builder: (context) => const LoadingScreen(),
+        );
+      case '/login':
+        return MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        );
+      case '/home':
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        );
+      case '/questions':
+        return MaterialPageRoute(
+          builder: (context) => const QuestionsPage(),
+        );
+      case '/souvenirs':
+        return MaterialPageRoute(
+          builder: (context) => MyDatesPage(),
+        );
+        case '/notas':
+          return MaterialPageRoute(
+            builder: (context) => DrawingBoard(),
+          );
+      case '/activityDetail':
+        final String? title = settings.arguments as String?;
+        return MaterialPageRoute(
+          builder: (context) =>
+              DetailActivityPage(title: title ?? 'Actividades'),
+        );
+      default:
+        // Manejo de rutas desconocidas (404)
+        return MaterialPageRoute(
+          builder: (context) => const Scaffold(
+            body: Center(
+              child: Text('404: Ruta no encontrada'),
+            ),
+          ),
+        );
+    }
   }
 }
