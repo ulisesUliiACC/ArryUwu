@@ -42,7 +42,7 @@ class MenuScreen extends StatelessWidget {
         ),
         SalomonBottomBarItem(
           icon: const FaIcon(
-              FontAwesomeIcons.userAlt), // Icono de perfil con FontAwesome
+              FontAwesomeIcons.userLarge), // Icono de perfil con FontAwesome
           title: const Text("Perfil"),
           selectedColor: Palette.primary,
           unselectedColor: Palette.secondary,

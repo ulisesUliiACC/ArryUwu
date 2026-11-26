@@ -16,7 +16,7 @@ class ActivityPage extends StatelessWidget {
         "title": "Actividades"
       },
       {
-        "icon": FontAwesomeIcons.hiking,
+        "icon": FontAwesomeIcons.personHiking,
         "color": Colors.green,
         "title": "Senderismo"
       },
@@ -101,7 +101,7 @@ class ActivityPage extends StatelessWidget {
                             }
                           },
                           child: _achievementCard(
-                            icon: activity["icon"] as IconData,
+                            icon: activity["icon"] as FaIconData,
                             color: activity["color"] as Color,
                             title: activity["title"] as String,
                           ),
@@ -148,7 +148,7 @@ class ActivityPage extends StatelessWidget {
   }
 
   Widget _achievementCard({
-    required IconData icon,
+    required FaIconData icon,
     required Color color,
     required String title,
   }) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:arryuwu/auth/data/auth_service.dart';
 import 'package:arryuwu/Home/Screens/Home/HomeWitgets.dart'; // Asegúrate de que estos widgets existen y son los correctos.
 import 'package:arryuwu/colors/palette.dart'; // Asegúrate de importar tu paleta
 
@@ -75,9 +76,12 @@ class ProfilePage extends StatelessWidget {
 
                   // Botón para cerrar sesión
                   ElevatedButton(
-                    onPressed: () {
-                      // Acción para cerrar sesión
-                      print('Botón Cerrar sesión presionado');
+                    onPressed: () async {
+                      // Borra los tokens guardados y vuelve al login
+                      await AuthService.logout();
+                      if (!context.mounted) return;
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil('/login', (route) => false);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor:

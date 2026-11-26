@@ -5,6 +5,8 @@ import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:arryuwu/auth/ui/RegisterScreen.dart'; // Import RegisterScreen
+import 'package:arryuwu/auth/data/auth_service.dart';
+import 'package:arryuwu/core/api_client.dart';
 
 // ...'
 class LoginScreen extends StatefulWidget {
@@ -20,12 +22,33 @@ class _LoginPageState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true; // Variable to control password visibility
   final bool _showRegistrationForm = false; // Variable to control form type
+  bool _loading = false; // Mientras se espera la respuesta del backend
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _loading = true);
+    try {
+      await AuthService.login(_emailController.text, _passwordController.text);
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), backgroundColor: Colors.redAccent),
+      );
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -62,7 +85,7 @@ class _LoginPageState extends State<LoginScreen> {
                     fontWeight: FontWeight.w400,
                   ),
                   decoration: const InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Email o usuario',
                     labelStyle: TextStyle(
                       color: Color(0xFF755DC1),
                       fontSize: 15,
@@ -99,14 +122,9 @@ class _LoginPageState extends State<LoginScreen> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese un correo electrónico';
-                    }
-                    // RegExp para validar correo electrónico
-                    final emailRegex = RegExp(
-                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-                    if (!emailRegex.hasMatch(value)) {
-                      return 'Por favor, ingrese un correo electrónico válido';
+                    // El backend acepta correo o nombre de usuario
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Por favor, ingrese su correo o nombre de usuario';
                     }
                     return null;
                   },
@@ -126,9 +144,9 @@ class _LoginPageState extends State<LoginScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword
+                      icon: FaIcon(_obscurePassword
                           ? FontAwesomeIcons.heart
-                          : FontAwesomeIcons.heartBroken),
+                          : FontAwesomeIcons.heartCrack),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -175,24 +193,20 @@ class _LoginPageState extends State<LoginScreen> {
 
                 // Login/Register button
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Redirigir a HomeScreen después de login exitoso
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const HomeScreen(), // Redirige al HomeScreen
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _loading ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(150, 50),
                     padding: const EdgeInsets.all(20),
                   ),
-                  child: Text(
-                      _showRegistrationForm ? 'Registrarse' : 'Iniciar sesión'),
+                  child: _loading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(_showRegistrationForm
+                          ? 'Registrarse'
+                          : 'Iniciar sesión'),
                 ),
                 const SizedBox(height: 20),
 

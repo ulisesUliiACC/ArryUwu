@@ -7,6 +7,7 @@ import 'package:arryuwu/auth/ui/loading_screen.dart';
 import 'package:arryuwu/Home/HomeScreen.dart';
 import 'package:arryuwu/Home/Screens/Activity/DetailActivityPage.dart'; // Importa las pantallas
 import 'package:arryuwu/colors/palette.dart'; // Importa la paleta
+import 'package:arryuwu/core/navigation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FlyArry Demo',
+      navigatorKey: navigatorKey, // para volver al login si la sesión expira
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Palette.primary),
         useMaterial3: true,
@@ -66,7 +68,7 @@ class MyApp extends StatelessWidget {
         );
       case '/souvenirs':
         return MaterialPageRoute(
-          builder: (context) => MyDatesPage(),
+          builder: (context) => const MyDatesPage(),
         );
         case '/notas':
           return MaterialPageRoute(
