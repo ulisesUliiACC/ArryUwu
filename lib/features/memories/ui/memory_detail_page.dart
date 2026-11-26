@@ -36,9 +36,28 @@ class _MemoryDetailPageState extends State<MemoryDetailPage> {
         MemoryService.image(_memory.photoUrl),
         MemoryService.image(_memory.depthUrl!),
       ]).then((r) => (r[0], r[1]));
-    } else if (_memory.depthPending) {
-      // Mientras se genera el 3D, pregunta cada 3 s.
-      _poll ??= Timer.periodic(const Duration(seconds: 3), (_) => _refresh());
+    } else {
+      _images = null; // sin mapa listo se muestra la foto normal
+      if (_memory.depthPending) {
+        // Mientras se genera el 3D, pregunta cada 3 s.
+        _poll ??= Timer.periodic(const Duration(seconds: 3), (_) => _refresh());
+      }
+    }
+  }
+
+  Future<void> _regenerate() async {
+    try {
+      final updated = await MemoryService.regenerateDepth(_memory.id);
+      if (!mounted) return;
+      setState(() {
+        _memory = updated;
+        _setup();
+      });
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), backgroundColor: AppColors.error),
+      );
     }
   }
 
@@ -103,6 +122,12 @@ class _MemoryDetailPageState extends State<MemoryDetailPage> {
         foregroundColor: AppColors.ink,
         title: Text(formatFecha(_memory.memoryDate)),
         actions: [
+          if (_memory.mine && !_memory.depthPending)
+            IconButton(
+              tooltip: 'Rehacer efecto 3D',
+              icon: const Icon(Icons.auto_fix_high_outlined),
+              onPressed: _regenerate,
+            ),
           if (_memory.mine)
             IconButton(
               tooltip: 'Borrar recuerdo',

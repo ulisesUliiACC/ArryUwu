@@ -36,6 +36,12 @@ class MemoryService {
 
   static Future<void> delete(int id) => _api.delete('/api/memories/$id');
 
+  /// Pide al backend rehacer el efecto 3D; el recuerdo vuelve a PENDING.
+  static Future<Memory> regenerateDepth(int id) async {
+    _imageCache.remove('/api/memories/$id/depth'); // el mapa nuevo tendrá la misma URL
+    return Memory.fromJson(await _api.post('/api/memories/$id/depth'));
+  }
+
   static Future<Uint8List> image(String url) async {
     final cached = _imageCache[url];
     if (cached != null) return cached;
