@@ -1,10 +1,10 @@
-import 'package:arryuwu/Home/Screens/Activity/ActivityPage.dart';
-import 'package:arryuwu/Home/Screens/Activity/DetailActivityPage.dart';
-import 'package:arryuwu/Home/Screens/Code/CodePage.dart';
-import 'package:arryuwu/Home/Screens/Drawer/Drawing.dart';
-import 'package:arryuwu/Home/Screens/Notify/NotifyPage.dart';
-import 'package:arryuwu/Home/Screens/Profile/ProfilePage.dart';
-import 'package:arryuwu/Home/Screens/Questions/QuestionsPage.dart';
+import 'package:arryuwu/features/activities/ui/activities_page.dart';
+import 'package:arryuwu/features/activities/ui/activity_detail_page.dart';
+import 'package:arryuwu/features/couple/ui/link_page.dart';
+import 'package:arryuwu/features/canvas/ui/canvas_page.dart';
+import 'package:arryuwu/features/notifications/ui/notifications_page.dart';
+import 'package:arryuwu/features/profile/ui/profile_page.dart';
+import 'package:arryuwu/features/questions/ui/questions_page.dart';
 import 'package:arryuwu/features/auth/data/auth_controller.dart';
 import 'package:arryuwu/features/auth/ui/login_page.dart';
 import 'package:arryuwu/features/auth/ui/register_page.dart';
@@ -46,19 +46,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, __, shell) => HomeShell(shell: shell),
         branches: [
           StatefulShellBranch(routes: [GoRoute(path: '/home', builder: (_, __) => const HomePage())]),
-          StatefulShellBranch(routes: [GoRoute(path: '/activities', builder: (_, __) => const ActivityPage())]),
-          StatefulShellBranch(routes: [GoRoute(path: '/notifications', builder: (_, __) => const Notifypage())]),
+          StatefulShellBranch(routes: [GoRoute(path: '/activities', builder: (_, __) => const ActivitiesPage())]),
+          StatefulShellBranch(routes: [GoRoute(path: '/notifications', builder: (_, __) => const NotificationsPage())]),
           StatefulShellBranch(routes: [GoRoute(path: '/profile', builder: (_, __) => const ProfilePage())]),
         ],
       ),
 
       GoRoute(path: '/memories', builder: (_, __) => const MemoriesPage()),
       GoRoute(path: '/questions', builder: (_, __) => const QuestionsPage()),
-      GoRoute(path: '/notes', builder: (_, __) => const DrawingBoard()),
-      GoRoute(path: '/code', builder: (_, __) => const CodePage()),
+      GoRoute(path: '/notes', builder: (_, __) => const CanvasPage()),
+      GoRoute(path: '/code', builder: (_, __) => const LinkPage()),
       GoRoute(
         path: '/activity',
-        builder: (_, s) => DetailActivityPage(title: s.extra as String? ?? 'Actividades'),
+        builder: (_, s) => ActivityDetailPage(title: s.extra as String? ?? 'Actividades'),
       ),
     ],
   );
