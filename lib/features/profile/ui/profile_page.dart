@@ -1,6 +1,8 @@
 import 'package:arryuwu/core/api_client.dart';
 import 'package:arryuwu/features/auth/data/auth_controller.dart';
 import 'package:arryuwu/features/home/data/me.dart';
+import 'package:arryuwu/features/profile/ui/avatar_picker_sheet.dart';
+import 'package:arryuwu/features/profile/ui/user_avatar.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:arryuwu/ui/widgets/app_button.dart';
 import 'package:arryuwu/ui/widgets/app_text_field.dart';
@@ -131,7 +133,6 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final fullName = [me.nombre, me.apellido].where((s) => s != null && s.trim().isNotEmpty).join(' ');
-    final initial = (fullName.isNotEmpty ? fullName : me.userName).characters.first.toUpperCase();
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -142,19 +143,34 @@ class _Header extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Container(
-            width: 88,
-            height: 88,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [AppColors.lavender, AppColors.pink],
+          // Tocar el avatar abre el selector (emojis animados o foto propia).
+          Semantics(
+            button: true,
+            label: 'Cambiar avatar',
+            child: Pressable(
+              child: GestureDetector(
+                onTap: () => showAvatarPicker(context, me),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    UserAvatar(avatar: me.avatar, initial: me.initial, size: 104),
+                    Positioned(
+                      right: -2,
+                      bottom: -2,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.lavenderDeep,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const Icon(Icons.edit_rounded, size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            child: Text(initial, style: text.headlineMedium?.copyWith(color: Colors.white)),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(

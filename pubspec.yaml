@@ -85,6 +85,7 @@ flutter:
         - assets/lottie/AnimacionPantalla.json
         - assets/lottie/heart.json
         - assets/img/date1.jpeg
+        - assets/avatars/
 
 
   #   - images/a_dot_burr.jpeg

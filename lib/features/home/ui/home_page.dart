@@ -2,6 +2,7 @@ import 'package:arryuwu/features/home/data/me.dart';
 import 'package:arryuwu/features/memories/data/memory.dart';
 import 'package:arryuwu/features/memories/data/memory_service.dart';
 import 'package:arryuwu/features/memories/ui/auth_image.dart';
+import 'package:arryuwu/features/profile/ui/user_avatar.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:arryuwu/ui/widgets/entrance.dart';
 import 'package:arryuwu/ui/widgets/pressable.dart';
@@ -54,7 +55,7 @@ class HomePage extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    _Avatar(letter: me.value?.firstName ?? '', onTap: () => context.go('/profile')),
+                    _Avatar(me: me.value, onTap: () => context.go('/profile')),
                   ],
                 ),
               ),
@@ -139,10 +140,10 @@ class HomePage extends ConsumerWidget {
 }
 
 class _Avatar extends StatelessWidget {
-  final String letter;
+  final Me? me;
   final VoidCallback onTap;
 
-  const _Avatar({required this.letter, required this.onTap});
+  const _Avatar({required this.me, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -152,14 +153,9 @@ class _Avatar extends StatelessWidget {
       child: Pressable(
         child: GestureDetector(
           onTap: onTap,
-          child: CircleAvatar(
-            radius: 24,
-            backgroundColor: AppColors.lavenderSoft,
-            child: Text(
-              letter.isEmpty ? '·' : letter[0].toUpperCase(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.lavenderDeep),
-            ),
-          ),
+          child: me == null
+              ? const CircleAvatar(radius: 26, backgroundColor: AppColors.lavenderSoft)
+              : UserAvatar(avatar: me!.avatar, initial: me!.initial, size: 52),
         ),
       ),
     );
@@ -214,7 +210,7 @@ class _CoupleCard extends StatelessWidget {
             )
           : Row(
               children: [
-                const _Heartbeat(),
+                _CoupleAvatars(me: me, partner: partner),
                 const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
@@ -237,6 +233,45 @@ class _CoupleCard extends StatelessWidget {
                 ),
               ],
             ),
+    );
+  }
+}
+
+/// Tu avatar y el de tu pareja, encimados, con un corazón que late entre los dos.
+class _CoupleAvatars extends StatelessWidget {
+  final Me me;
+  final Partner partner;
+
+  const _CoupleAvatars({required this.me, required this.partner});
+
+  @override
+  Widget build(BuildContext context) {
+    const size = 52.0;
+    return SizedBox(
+      width: size * 1.75,
+      height: size + 8,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            child: UserAvatar(avatar: me.avatar, initial: me.initial, size: size, borderWidth: 2),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: UserAvatar(
+              avatar: partner.avatar,
+              initial: partner.initial,
+              size: size,
+              partner: true,
+              borderWidth: 2,
+            ),
+          ),
+          const Positioned(left: 0, right: 0, bottom: -6, child: Center(child: _Heartbeat())),
+        ],
+      ),
     );
   }
 }
@@ -269,13 +304,18 @@ class _HeartbeatState extends State<_Heartbeat> with SingleTickerProviderStateMi
       TweenSequenceItem(tween: Tween(begin: 1.12, end: 1), weight: 14),
       TweenSequenceItem(tween: ConstantTween(1), weight: 52),
     ]).animate(_c);
+    // Insignia pequeña entre los dos avatares.
     return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), shape: BoxShape.circle),
+      width: 26,
+      height: 26,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: AppSpacing.softShadow,
+      ),
       child: ScaleTransition(
         scale: scale,
-        child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 30),
+        child: const Icon(Icons.favorite_rounded, color: AppColors.pinkDeep, size: 16),
       ),
     );
   }
