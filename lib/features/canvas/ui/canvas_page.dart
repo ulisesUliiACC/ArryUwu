@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:arryuwu/features/canvas/data/canvas_controller.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:arryuwu/ui/widgets/app_button.dart';
@@ -20,8 +22,12 @@ class _CanvasPageState extends ConsumerState<CanvasPage> {
   int _colorIndex = 1;
   int _widthIndex = 1;
   Size _canvasSize = Size.zero;
+  String? _activeId;
 
   Color get _color => canvasInkColors[_colorIndex];
+
+  /// Unidad de las coordenadas compartidas: el ancho del lienzo en esta pantalla.
+  double get _unit => _canvasSize.width <= 0 ? 1 : _canvasSize.width;
 
   @override
   void dispose() {
@@ -31,13 +37,31 @@ class _CanvasPageState extends ConsumerState<CanvasPage> {
 
   // --- Dibujo ---
 
-  void _onPanStart(DragStartDetails d) => _active.start(d.localPosition, _color, canvasWidths[_widthIndex]);
+  void _onPanStart(DragStartDetails d) {
+    final id = CanvasController.newId();
+    _activeId = id;
+    _active.start(d.localPosition, _color, canvasWidths[_widthIndex]);
+    ref.read(canvasProvider.notifier).startStroke(id, d.localPosition / _unit, _color, canvasWidths[_widthIndex] / _unit);
+  }
 
-  void _onPanUpdate(DragUpdateDetails d) => _active.add(d.localPosition);
+  void _onPanUpdate(DragUpdateDetails d) {
+    final id = _activeId;
+    if (id == null || !_active.add(d.localPosition)) return;
+    ref.read(canvasProvider.notifier).extendStroke(id, d.localPosition / _unit);
+  }
 
   void _onPanEnd([Object? _]) {
-    final stroke = _active.finish();
-    if (stroke != null) ref.read(canvasProvider.notifier).addStroke(stroke);
+    final id = _activeId;
+    final points = _active.finish();
+    _activeId = null;
+    if (id == null || points == null) return;
+    ref.read(canvasProvider.notifier).finishStroke(Stroke(
+          id: id,
+          points: [for (final p in points) p / _unit],
+          color: _active.color,
+          width: _active.width / _unit,
+          by: ref.read(canvasProvider).me,
+        ));
   }
 
   // --- Notas ---
@@ -50,7 +74,12 @@ class _CanvasPageState extends ConsumerState<CanvasPage> {
       (_canvasSize.width / 2 - 72).clamp(0.0, double.infinity) + (count % 4) * AppSpacing.lg,
       (_canvasSize.height / 4).clamp(0.0, double.infinity) + (count % 4) * AppSpacing.lg,
     );
-    ref.read(canvasProvider.notifier).addNote(result.text, result.color, start);
+    ref.read(canvasProvider.notifier).upsertNote(StickyNote(
+          id: CanvasController.newId(),
+          text: result.text,
+          position: start / _unit,
+          color: result.color,
+        ));
     HapticFeedback.lightImpact();
   }
 
@@ -61,17 +90,16 @@ class _CanvasPageState extends ConsumerState<CanvasPage> {
     if (result.delete || result.text.isEmpty) {
       notifier.removeNote(note.id);
     } else {
-      notifier.updateNote(note.id, text: result.text, color: result.color);
+      notifier.upsertNote(note.copyWith(text: result.text, color: result.color));
     }
   }
 
   void _moveNote(StickyNote note, Offset delta) {
-    final p = note.position + delta;
+    final p = note.position * _unit + delta;
     final maxX = (_canvasSize.width - 48).clamp(0.0, double.infinity);
     final maxY = (_canvasSize.height - 48).clamp(0.0, double.infinity);
-    ref
-        .read(canvasProvider.notifier)
-        .updateNote(note.id, position: Offset(p.dx.clamp(0.0, maxX), p.dy.clamp(0.0, maxY)));
+    final clamped = Offset(p.dx.clamp(0.0, maxX), p.dy.clamp(0.0, maxY));
+    ref.read(canvasProvider.notifier).moveNoteLocal(note.copyWith(position: clamped / _unit));
   }
 
   // --- Acciones ---
@@ -100,7 +128,10 @@ class _CanvasPageState extends ConsumerState<CanvasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Lienzo')),
+      appBar: AppBar(
+        title: const Text('Lienzo'),
+        actions: const [Padding(padding: EdgeInsets.only(right: AppSpacing.md), child: _SyncBadge())],
+      ),
       body: SafeArea(
         top: false,
         child: Padding(
@@ -137,7 +168,12 @@ class _CanvasPageState extends ConsumerState<CanvasPage> {
                           ),
                         ),
                         _EmptyHint(active: _active),
-                        _NotesLayer(onMove: _moveNote, onTap: _editNote),
+                        _NotesLayer(
+                          unit: _unit,
+                          onMove: _moveNote,
+                          onMoveEnd: (n) => ref.read(canvasProvider.notifier).commitNote(n.id),
+                          onTap: _editNote,
+                        ),
                         Positioned(
                           left: AppSpacing.sm,
                           right: AppSpacing.sm,
@@ -189,20 +225,22 @@ class _ActiveStroke extends ChangeNotifier {
     notifyListeners();
   }
 
-  void add(Offset p) {
-    if (points.isEmpty) return;
-    // Ignora movimientos mínimos: menos puntos, mismo dibujo.
-    if ((p - points.last).distanceSquared < 1.5) return;
+  /// Devuelve false si el movimiento fue mínimo y se ignoró (menos puntos, mismo dibujo).
+  bool add(Offset p) {
+    if (points.isEmpty) return false;
+    if ((p - points.last).distanceSquared < 1.5) return false;
     points.add(p);
     notifyListeners();
+    return true;
   }
 
-  Stroke? finish() {
+  /// Puntos del trazo terminado (en píxeles de esta pantalla), o null si no había trazo.
+  List<Offset>? finish() {
     if (points.isEmpty) return null;
-    final stroke = Stroke(points: points, color: color, width: width);
+    final done = List<Offset>.of(points);
     points.clear();
     notifyListeners();
-    return stroke;
+    return done;
   }
 }
 
@@ -250,8 +288,10 @@ class _StrokesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Las coordenadas guardadas son relativas al ancho: se escalan a esta pantalla.
+    final u = size.width;
     for (final s in strokes) {
-      _paintStroke(canvas, s.points, s.color, s.width);
+      _paintStroke(canvas, [for (final p in s.points) p * u], s.color, s.width * u);
     }
   }
 
@@ -320,10 +360,12 @@ class _EmptyHint extends ConsumerWidget {
 // ---------------------------------------------------------------------------
 
 class _NotesLayer extends ConsumerWidget {
+  final double unit;
   final void Function(StickyNote note, Offset delta) onMove;
+  final ValueChanged<StickyNote> onMoveEnd;
   final ValueChanged<StickyNote> onTap;
 
-  const _NotesLayer({required this.onMove, required this.onTap});
+  const _NotesLayer({required this.unit, required this.onMove, required this.onMoveEnd, required this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -331,13 +373,16 @@ class _NotesLayer extends ConsumerWidget {
     return Stack(
       children: [
         for (final note in notes)
-          Positioned(
+          AnimatedPositioned(
             key: ValueKey(note.id),
-            left: note.position.dx,
-            top: note.position.dy,
+            // Las notas que mueve la pareja se deslizan suave hasta su nuevo lugar.
+            duration: const Duration(milliseconds: 120),
+            left: note.position.dx * unit,
+            top: note.position.dy * unit,
             child: _NoteCard(
               note: note,
               onPan: (d) => onMove(note, d.delta),
+              onPanEnd: () => onMoveEnd(note),
               onTap: () => onTap(note),
             ),
           ),
@@ -346,23 +391,92 @@ class _NotesLayer extends ConsumerWidget {
   }
 }
 
-class _NoteCard extends StatelessWidget {
-  final StickyNote note;
-  final GestureDragUpdateCallback onPan;
-  final VoidCallback onTap;
+/// Estado de la sincronización en la barra: en vivo con tu pareja, conectando o sin conexión.
+class _SyncBadge extends ConsumerStatefulWidget {
+  const _SyncBadge();
 
-  const _NoteCard({required this.note, required this.onPan, required this.onTap});
+  @override
+  ConsumerState<_SyncBadge> createState() => _SyncBadgeState();
+}
+
+class _SyncBadgeState extends ConsumerState<_SyncBadge> {
+  Timer? _tick;
+
+  @override
+  void initState() {
+    super.initState();
+    // "Está dibujando…" depende del tiempo: se revisa cada medio segundo.
+    _tick = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Una leve inclinación distinta por nota, como post-its pegados a mano.
-    final tilt = ((note.id % 5) - 2) * 0.025;
+    final s = ref.watch(canvasProvider);
+    final (IconData icon, Color color, String label) = switch (s.status) {
+      SyncStatus.connecting => (Icons.sync_rounded, AppColors.inkMuted, 'Conectando…'),
+      SyncStatus.offline => (Icons.cloud_off_rounded, AppColors.error, 'Sin conexión'),
+      SyncStatus.live when s.partnerIsDrawing => (Icons.brush_rounded, AppColors.pinkDeep, '@${s.partnerOnline ?? 'tu pareja'} dibuja…'),
+      SyncStatus.live when s.partnerOnline != null => (Icons.circle, AppColors.success, '@${s.partnerOnline} está aquí'),
+      SyncStatus.live => (Icons.cloud_done_rounded, AppColors.lavenderDeep, 'Guardado'),
+    };
+    return Semantics(
+      liveRegion: true,
+      label: label,
+      child: GestureDetector(
+        onTap: s.status == SyncStatus.offline ? ref.read(canvasProvider.notifier).retryNow : null,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          child: Container(
+            key: ValueKey(label),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(icon, size: 12, color: color),
+              const SizedBox(width: AppSpacing.xs),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 150),
+                child: Text(label,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color)),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NoteCard extends StatelessWidget {
+  final StickyNote note;
+  final GestureDragUpdateCallback onPan;
+  final VoidCallback onPanEnd;
+  final VoidCallback onTap;
+
+  const _NoteCard({required this.note, required this.onPan, required this.onPanEnd, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    // Una leve inclinación distinta por nota (estable en los dos celulares), como post-its pegados a mano.
+    final tilt = ((note.id.codeUnits.fold<int>(0, (a, b) => a + b) % 5) - 2) * 0.025;
     return Semantics(
       button: true,
       label: 'Nota: ${note.text}',
       hint: 'Toca para editar, arrastra para mover',
       child: GestureDetector(
         onPanUpdate: onPan,
+        onPanEnd: (_) => onPanEnd(),
         onTap: onTap,
         child: Pressable(
           pressedScale: 1.04,
@@ -531,7 +645,8 @@ class _Toolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canUndo = ref.watch(canvasProvider.select((s) => s.strokes.isNotEmpty));
+    // Solo se pueden deshacer los trazos propios, no los de la pareja.
+    final canUndo = ref.watch(canvasProvider.select((s) => s.strokes.any((t) => t.by == null || t.by == s.me)));
     final isEmpty = ref.watch(canvasProvider.select((s) => s.isEmpty));
     final color = canvasInkColors[colorIndex];
 
