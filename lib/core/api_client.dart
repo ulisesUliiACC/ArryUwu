@@ -58,8 +58,8 @@ class ApiClient {
   Future<dynamic> delete(String path) async => _json(await _execute(() => _jsonRequest('DELETE', path)));
 
   /// Descarga binaria autenticada (p. ej. fotos de recuerdos).
-  Future<Uint8List> getBytes(String path) async =>
-      (await _execute(() => _jsonRequest('GET', path))).bodyBytes;
+  Future<Uint8List> getBytes(String path, {Duration? timeout}) async =>
+      (await _execute(() => _jsonRequest('GET', path), timeout: timeout)).bodyBytes;
 
   /// POST multipart/form-data con campos de texto y archivos.
   Future<dynamic> postMultipart(String path,

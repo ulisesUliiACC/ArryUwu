@@ -1,5 +1,6 @@
 import 'package:arryuwu/core/api_client.dart';
 import 'package:arryuwu/features/auth/data/auth_controller.dart';
+import 'package:arryuwu/features/couple/ui/break_up_sheet.dart';
 import 'package:arryuwu/features/home/data/me.dart';
 import 'package:arryuwu/features/profile/ui/avatar_picker_sheet.dart';
 import 'package:arryuwu/features/profile/ui/user_avatar.dart';
@@ -70,6 +71,13 @@ class ProfilePage extends ConsumerWidget {
                   index: 4,
                   child: _OptionsCard(
                     children: [
+                      if (m.partner != null)
+                        _OptionTile(
+                          icon: Icons.heart_broken_rounded,
+                          title: 'Romper lazo',
+                          destructive: true,
+                          onTap: () => showBreakUpSheet(context, m.partner!),
+                        ),
                       _OptionTile(
                         icon: Icons.logout_rounded,
                         title: 'Cerrar sesión',
