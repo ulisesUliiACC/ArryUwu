@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:arryuwu/core/api_client.dart';
 import 'package:arryuwu/features/memories/data/memory_service.dart';
+import 'package:arryuwu/features/places/ui/place_picker_page.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,7 +20,16 @@ class _AddMemoryPageState extends State<AddMemoryPage> {
   Uint8List? _photo;
   String _filename = 'recuerdo.jpg';
   DateTime _date = DateTime.now();
+  MemoryPlace? _place;
   bool _saving = false;
+
+  Future<void> _pickPlace() async {
+    final picked = await Navigator.push<MemoryPlace>(
+      context,
+      MaterialPageRoute(builder: (_) => PlacePickerPage(initial: _place)),
+    );
+    if (picked != null) setState(() => _place = picked);
+  }
 
   @override
   void dispose() {
@@ -65,6 +75,7 @@ class _AddMemoryPageState extends State<AddMemoryPage> {
         filename: _filename,
         date: _date,
         description: _descriptionController.text,
+        place: _place,
       );
       if (mounted) Navigator.pop(context, true);
     } on ApiException catch (e) {
@@ -139,6 +150,25 @@ class _AddMemoryPageState extends State<AddMemoryPage> {
               title: const Text('Fecha'),
               subtitle: Text(formatFecha(_date)),
               trailing: const Icon(Icons.chevron_right),
+            ),
+            const SizedBox(height: AppSpacing.md),
+
+            // Lugar
+            ListTile(
+              onTap: _saving ? null : _pickPlace,
+              tileColor: AppColors.surface,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),
+              leading: const Icon(Icons.place_outlined, color: AppColors.pinkDeep),
+              title: const Text('Lugar'),
+              subtitle: Text(_place == null ? 'Agregar dónde fue (opcional)' : _place!.label),
+              trailing: _place == null
+                  ? const Icon(Icons.chevron_right)
+                  : IconButton(
+                      tooltip: 'Quitar lugar',
+                      icon: const Icon(Icons.close_rounded),
+                      onPressed: _saving ? null : () => setState(() => _place = null),
+                    ),
             ),
             const SizedBox(height: AppSpacing.lg),
 

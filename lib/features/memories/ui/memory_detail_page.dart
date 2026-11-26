@@ -6,6 +6,7 @@ import 'package:arryuwu/features/memories/data/memory.dart';
 import 'package:arryuwu/features/memories/data/memory_service.dart';
 import 'package:arryuwu/features/memories/ui/auth_image.dart';
 import 'package:arryuwu/features/memories/ui/parallax_view.dart';
+import 'package:arryuwu/features/places/ui/place_map_card.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 
@@ -162,6 +163,10 @@ class _MemoryDetailPageState extends State<MemoryDetailPage> {
                 _memory.mine ? 'Lo subiste tú' : 'Lo subió @${_memory.ownerUserName}',
                 style: text.bodyMedium?.copyWith(color: AppColors.inkMuted),
               ),
+              if (_memory.place != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                PlaceMapCard(place: _memory.place!, height: 110),
+              ],
             ],
           ),
         ),

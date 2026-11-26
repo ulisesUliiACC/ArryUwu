@@ -4,6 +4,8 @@ import 'package:arryuwu/core/api_client.dart';
 
 import 'memory.dart';
 
+export 'memory.dart' show MemoryPlace;
+
 /// Recuerdos de la pareja contra /api/memories.
 class MemoryService {
   static final ApiClient _api = ApiClient.instance;
@@ -24,10 +26,16 @@ class MemoryService {
     required String filename,
     required DateTime date,
     String? description,
+    MemoryPlace? place,
   }) async {
+    final point = place?.point;
+    final placeName = place?.name?.trim();
     final data = await _api.postMultipart('/api/memories', fields: {
       'memoryDate': _isoDate(date),
       if (description != null && description.trim().isNotEmpty) 'description': description.trim(),
+      if (point != null) 'latitude': point.latitude.toString(),
+      if (point != null) 'longitude': point.longitude.toString(),
+      if (placeName != null && placeName.isNotEmpty) 'placeName': placeName,
     }, files: [
       UploadFile(field: 'photo', bytes: photo, filename: filename),
     ]);

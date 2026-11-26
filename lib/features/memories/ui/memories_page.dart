@@ -8,6 +8,7 @@ import 'package:arryuwu/features/memories/ui/auth_image.dart';
 import 'package:arryuwu/features/memories/ui/memory_detail_page.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 /// Línea del tiempo de recuerdos de la pareja (los míos y los de mi pareja vinculada).
@@ -89,6 +90,13 @@ class _MemoriesPageState extends State<MemoriesPage> {
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.ink,
         title: const Text('Nuestros recuerdos'),
+        actions: [
+          IconButton(
+            tooltip: 'Mapa de recuerdos',
+            icon: const Icon(Icons.map_outlined),
+            onPressed: () => context.push('/memories/map'),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _add,
