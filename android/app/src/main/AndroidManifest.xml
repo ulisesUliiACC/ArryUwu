@@ -3,6 +3,10 @@
     <!-- Ubicación: solo mientras la app está abierta, para el lugar de un recuerdo -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Cámara: para ver las cápsulas en el lugar -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="false"/>
     <application
         android:label="arryuwu"
         android:name="${applicationName}"

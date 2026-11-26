@@ -13,6 +13,7 @@ import 'package:arryuwu/features/home/ui/home_page.dart';
 import 'package:arryuwu/features/home/ui/home_shell.dart';
 import 'package:arryuwu/features/memories/ui/memories_page.dart';
 import 'package:arryuwu/features/places/ui/memories_map_page.dart';
+import 'package:arryuwu/features/capsules/ui/capsules_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -55,6 +56,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       GoRoute(path: '/memories', builder: (_, __) => const MemoriesPage()),
       GoRoute(path: '/memories/map', builder: (_, __) => const MemoriesMapPage()),
+      GoRoute(path: '/capsules', builder: (_, __) => const CapsulesPage()),
       GoRoute(path: '/questions', builder: (_, __) => const QuestionsPage()),
       GoRoute(path: '/notes', builder: (_, __) => const CanvasPage()),
       GoRoute(path: '/code', builder: (_, __) => const LinkPage()),

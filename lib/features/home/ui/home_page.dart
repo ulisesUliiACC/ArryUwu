@@ -116,6 +116,44 @@ class HomePage extends ConsumerWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Cápsulas en lugares reales
+              Entrance(
+                index: 7,
+                child: Pressable(
+                  child: Material(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    child: InkWell(
+                      onTap: () => context.push('/capsules'),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        child: Row(children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: AppColors.pinkDeep.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                            ),
+                            child: const Icon(Icons.card_giftcard_rounded, color: AppColors.pinkDeep),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text('Cápsulas', style: text.titleMedium),
+                              Text('Esconde sorpresas en lugares reales', style: text.labelSmall),
+                            ]),
+                          ),
+                          const Icon(Icons.chevron_right_rounded, color: AppColors.inkMuted),
+                        ]),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: AppSpacing.xl),
 
               // Último recuerdo
