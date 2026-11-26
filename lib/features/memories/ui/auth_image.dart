@@ -1,4 +1,4 @@
-import 'package:arryuwu/memories/data/memory_service.dart';
+import 'package:arryuwu/features/memories/data/memory_service.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 

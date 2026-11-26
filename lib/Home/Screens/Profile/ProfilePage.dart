@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:arryuwu/auth/data/auth_service.dart';
+import 'package:arryuwu/features/auth/data/auth_controller.dart';
 import 'package:arryuwu/Home/Screens/Home/HomeWitgets.dart'; // Asegúrate de que estos widgets existen y son los correctos.
 import 'package:arryuwu/colors/palette.dart'; // Asegúrate de importar tu paleta
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends ConsumerWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
@@ -76,13 +77,8 @@ class ProfilePage extends StatelessWidget {
 
                   // Botón para cerrar sesión
                   ElevatedButton(
-                    onPressed: () async {
-                      // Borra los tokens guardados y vuelve al login
-                      await AuthService.logout();
-                      if (!context.mounted) return;
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil('/login', (route) => false);
-                    },
+                    // Borra los tokens; el router manda solo al login
+                    onPressed: () => ref.read(authProvider.notifier).logout(),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           Colors.redAccent, // Color rojo para cerrar sesión

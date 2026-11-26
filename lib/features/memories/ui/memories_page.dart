@@ -1,24 +1,24 @@
 import 'dart:async';
 
 import 'package:arryuwu/core/api_client.dart';
-import 'package:arryuwu/memories/data/memory.dart';
-import 'package:arryuwu/memories/data/memory_service.dart';
-import 'package:arryuwu/memories/ui/add_memory_page.dart';
-import 'package:arryuwu/memories/ui/auth_image.dart';
-import 'package:arryuwu/memories/ui/memory_detail_page.dart';
+import 'package:arryuwu/features/memories/data/memory.dart';
+import 'package:arryuwu/features/memories/data/memory_service.dart';
+import 'package:arryuwu/features/memories/ui/add_memory_page.dart';
+import 'package:arryuwu/features/memories/ui/auth_image.dart';
+import 'package:arryuwu/features/memories/ui/memory_detail_page.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 /// Línea del tiempo de recuerdos de la pareja (los míos y los de mi pareja vinculada).
-class MyDatesPage extends StatefulWidget {
-  const MyDatesPage({super.key});
+class MemoriesPage extends StatefulWidget {
+  const MemoriesPage({super.key});
 
   @override
-  State<MyDatesPage> createState() => _MyDatesPageState();
+  State<MemoriesPage> createState() => _MemoriesPageState();
 }
 
-class _MyDatesPageState extends State<MyDatesPage> {
+class _MemoriesPageState extends State<MemoriesPage> {
   List<Memory>? _memories;
   String? _error;
   Timer? _poll;

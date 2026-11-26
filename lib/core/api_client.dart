@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 import 'api_config.dart';
-import 'navigation.dart';
 import 'token_storage.dart';
 
 /// Error de la API con un mensaje listo para mostrar al usuario.
@@ -44,6 +43,9 @@ class ApiClient {
 
   final http.Client _http = http.Client();
   Future<bool>? _refreshing; // evita renovar el token dos veces en paralelo
+
+  /// Se llama cuando la sesión venció y no se pudo renovar (el AuthController manda al login).
+  void Function()? onSessionExpired;
 
   Future<dynamic> get(String path) async => _json(await _execute(() => _jsonRequest('GET', path)));
 
@@ -105,7 +107,7 @@ class ApiClient {
         return _execute(build, auth: auth, retried: true, timeout: timeout);
       }
       await TokenStorage.clear();
-      goToLogin();
+      onSessionExpired?.call();
       throw SessionExpiredException();
     }
 

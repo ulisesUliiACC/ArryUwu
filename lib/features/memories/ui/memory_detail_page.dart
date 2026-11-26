@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:arryuwu/core/api_client.dart';
-import 'package:arryuwu/memories/data/memory.dart';
-import 'package:arryuwu/memories/data/memory_service.dart';
-import 'package:arryuwu/memories/ui/auth_image.dart';
-import 'package:arryuwu/memories/ui/parallax_view.dart';
+import 'package:arryuwu/features/memories/data/memory.dart';
+import 'package:arryuwu/features/memories/data/memory_service.dart';
+import 'package:arryuwu/features/memories/ui/auth_image.dart';
+import 'package:arryuwu/features/memories/ui/parallax_view.dart';
 import 'package:arryuwu/ui/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class ActivityPage extends StatelessWidget {
   const ActivityPage({Key? key}) : super(key: key);
@@ -75,29 +76,16 @@ class ActivityPage extends StatelessWidget {
                       children: pageItems.map((activity) {
                         return GestureDetector(
                           onTap: () {
-                            if (activity["title"] == "Preguntas") {
-                              Navigator.pushNamed(
-                                context,
-                                '/questions', // Navega a QuestionsPage
-                              );
-                            } else if (activity["title"] == "Recuerdos") {
-                              // Navegar a la página de recuerdos
-                              Navigator.pushNamed(
-                                context,
-                                '/souvenirs', // Ruta para abrir MyDatesPage
-                              );
-                            } else if (activity["title"] == "mi notas") {
-                              Navigator.pushNamed(
-                                context,
-                                '/notas', // Ruta para abrir DrawingBoard
-                              );
-                            }
-                            else {
-                              Navigator.pushNamed(
-                                context,
-                                '/activityDetail',
-                                arguments: activity["title"],
-                              );
+                            final title = activity["title"] as String;
+                            switch (title) {
+                              case "Preguntas":
+                                context.push('/questions');
+                              case "Recuerdos":
+                                context.push('/memories');
+                              case "mi notas":
+                                context.push('/notes');
+                              default:
+                                context.push('/activity', extra: title);
                             }
                           },
                           child: _achievementCard(
